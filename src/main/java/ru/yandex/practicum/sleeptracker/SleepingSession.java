@@ -1,5 +1,6 @@
 package ru.yandex.practicum.sleeptracker;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class SleepingSession {
@@ -36,6 +37,10 @@ public class SleepingSession {
 
     public void setSleepQuality(SleepQuality sleepQuality) {
         this.sleepQuality = sleepQuality;
+    }
+
+    public Duration getDuration() {
+        return Duration.between(fellAsleepAt, wokeUpAt);
     }
 
     @Override
