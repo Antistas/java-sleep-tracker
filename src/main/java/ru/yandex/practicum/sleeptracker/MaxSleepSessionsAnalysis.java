@@ -15,7 +15,7 @@ public class MaxSleepSessionsAnalysis implements SleepAnalysisFunction {
             return new SleepAnalysisResult<>("Максимальная продолжительность сна", d.toHours() + "ч. "
                     + d.toMinutesPart() + "мин.");
         } else {
-            return new SleepAnalysisResult<>("Максимальная продолжительность", "не определена");
+            return new SleepAnalysisResult<>("Максимальная продолжительность сна", "не определена");
         }
     }
 }

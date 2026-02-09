@@ -15,7 +15,7 @@ public class MinSleepSessionsAnalysis implements SleepAnalysisFunction {
             return new SleepAnalysisResult<>("Минимальная продолжительность сна", d.toHours() + "ч. "
                     + d.toMinutesPart() + "мин.");
         } else {
-            return new SleepAnalysisResult<>("Минимальная продолжительность", "не определена");
+            return new SleepAnalysisResult<>("Минимальная продолжительность сна", "не определена");
         }
     }
 }

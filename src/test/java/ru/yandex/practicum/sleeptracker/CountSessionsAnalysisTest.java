@@ -3,18 +3,16 @@ package ru.yandex.practicum.sleeptracker;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CountSessionsAnalysisTest {
 
-    /*
     private final CountSessionsAnalysis analysis = new CountSessionsAnalysis();
 
     @Test
     void shouldReturnZeroWhenEmptyList() {
         var result = analysis.apply(List.of());
-        assertEquals("Всего сессий сна за период", result.description());
+        assertEquals("Всего сессий сна", result.description());
         assertEquals(0, result.value());
     }
 
@@ -29,5 +27,5 @@ class CountSessionsAnalysisTest {
 
         var result = analysis.apply(sessions);
         assertEquals(2, result.value());
-    }*/
+    }
 }

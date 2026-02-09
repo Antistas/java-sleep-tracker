@@ -6,6 +6,6 @@ public final class CountSessionsAnalysis implements SleepAnalysisFunction {
     @Override
     public SleepAnalysisResult<Integer> apply(List<SleepingSession> sessions) {
         int count = (sessions == null) ? 0 : sessions.size();
-        return new SleepAnalysisResult<>("Всего сессий сна за период", count);
+        return new SleepAnalysisResult<>("Всего сессий сна", count);
     }
 }

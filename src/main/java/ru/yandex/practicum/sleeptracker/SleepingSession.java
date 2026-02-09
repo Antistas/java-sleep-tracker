@@ -43,6 +43,10 @@ public class SleepingSession {
         return Duration.between(fellAsleepAt, wokeUpAt);
     }
 
+    public boolean isBad() {
+        return (this.sleepQuality == SleepQuality.BAD);
+    }
+
     @Override
     public String toString() {
         return "SleepingSession{" +
