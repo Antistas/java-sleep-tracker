@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-// 1) Приложение должно принимать на вход как аргумент командной строки путь к файлу с логом сна,
-
 public class SleepTrackerApp {
 
     private static final DateTimeFormatter DT = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
@@ -27,15 +25,25 @@ public class SleepTrackerApp {
 
     public static void main(String[] args) {
 
-        SleepTrackerApp app = new SleepTrackerApp();
         AppLogger sysLog = null;
+        SleepTrackerApp app = new SleepTrackerApp();
 
         try {
             sysLog = AppLogger.system(SYSTEM_LOG);
             final AppLogger log = sysLog; // костыль конечно ((
 
-            sysLog.info("SleepTracker started. Sessions file: " + SESSIONS_FILE_PATH);
-            List<SleepingSession> sessions = app.readSessions(Path.of(SESSIONS_FILE_PATH));
+            sysLog.info("SleepTracker started.");
+
+            Path sessionsPath;
+            if (args.length > 0 && Files.exists(Path.of(args[0]))) {
+                sessionsPath = Path.of(args[0]);
+                sysLog.info("Используется файл из аргумента: " + sessionsPath);
+            } else {
+                sessionsPath = Path.of(SESSIONS_FILE_PATH);
+                sysLog.info("Используется файл по умолчанию: " + sessionsPath);
+            }
+
+            List<SleepingSession> sessions = app.readSessions(sessionsPath);
             sysLog.info("Loaded sessions: " + sessions.size());
 
             app.analyses.stream()

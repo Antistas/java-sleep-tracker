@@ -2,7 +2,6 @@ package ru.yandex.practicum.sleeptracker;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class ChronotypeAnalysis implements SleepAnalysisFunction {
-
-    private static final LocalTime OWL_SLEEP_AFTER = LocalTime.of(23, 0);
-    private static final LocalTime OWL_WAKE_AFTER = LocalTime.of(9, 0);
-
-    private static final LocalTime LARK_SLEEP_BEFORE = LocalTime.of(22, 0);
-    private static final LocalTime LARK_WAKE_BEFORE = LocalTime.of(7, 0);
 
     @Override
     public SleepAnalysisResult<Chronotype> apply(List<SleepingSession> sessions) {
@@ -31,11 +24,15 @@ public final class ChronotypeAnalysis implements SleepAnalysisFunction {
                 .collect(Collectors.toSet());
 
         Map<Chronotype, Long> chronotypeLongMap = nightsWithSleep.stream()
-                // для каждой ночи находим сессию
-                .map(night -> pickNightSession(sessions, night))
+                // для каждой ночной сессии определяем дату
+                .map(night -> pickNightSession(sessions, night)
+                // классифицируем
+                .map(session -> classifyNight(night, session))) // Optional<Chronotype>
+                // если есть
                 .filter(Optional::isPresent)
+                // получаем
                 .map(Optional::get) // SleepingSession
-                .map(this::classifyNight) // Chronotype
+                // делаем мапу - хронотип, количество
                 .collect(Collectors.groupingBy(ct -> ct, Collectors.counting()));
 
         long owls = chronotypeLongMap.getOrDefault(Chronotype.OWL, 0L);
@@ -63,17 +60,18 @@ public final class ChronotypeAnalysis implements SleepAnalysisFunction {
         return Chronotype.OWL;
     }
 
-    private Chronotype classifyNight(SleepingSession s) {
-        LocalTime fellAsleep = s.getFellAsleepAt().toLocalTime();
-        LocalTime wokeUp = s.getWokeUpAt().toLocalTime();
+    private Chronotype classifyNight(LocalDate nightDate, SleepingSession s) {
+        LocalDateTime owlSleepAfter = nightDate.minusDays(1).atTime(23, 0);
+        LocalDateTime owlWakeAfter = nightDate.atTime(9, 0);
 
-        boolean owl = fellAsleep.isAfter(OWL_SLEEP_AFTER) && wokeUp.isAfter(OWL_WAKE_AFTER);
-        if (owl)
-            return Chronotype.OWL;
+        LocalDateTime larkSleepBefore = nightDate.minusDays(1).atTime(22, 0);
+        LocalDateTime larkWakeBefore = nightDate.atTime(7, 0);
 
-        boolean lark = fellAsleep.isBefore(LARK_SLEEP_BEFORE) && wokeUp.isBefore(LARK_WAKE_BEFORE);
-        if (lark)
-            return Chronotype.LARK;
+        boolean owl = s.getFellAsleepAt().isAfter(owlSleepAfter) && s.getWokeUpAt().isAfter(owlWakeAfter);
+        if (owl) return Chronotype.OWL;
+
+        boolean lark = s.getFellAsleepAt().isBefore(larkSleepBefore) && s.getWokeUpAt().isBefore(larkWakeBefore);
+        if (lark) return Chronotype.LARK;
 
         return Chronotype.PIGEON;
     }
